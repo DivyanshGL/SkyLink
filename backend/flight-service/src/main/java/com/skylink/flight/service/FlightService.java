@@ -21,4 +21,8 @@ public interface FlightService {
 
     ApiResponse<String> deleteFlight(Long id);
 
+    ApiResponse<String> reserveSeats(Long flightId, Integer seats);
+
+    ApiResponse<String> releaseSeats(Long flightId, Integer seats);
+
 }

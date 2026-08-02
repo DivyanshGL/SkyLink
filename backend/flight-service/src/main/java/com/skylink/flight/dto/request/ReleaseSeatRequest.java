@@ -1,0 +1,17 @@
+package com.skylink.flight.dto.request;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ReleaseSeatRequest {
+
+    @NotNull(message = "Seats are required")
+    @Min(value = 1, message = "Seats must be at least 1")
+    private Integer seats;
+}

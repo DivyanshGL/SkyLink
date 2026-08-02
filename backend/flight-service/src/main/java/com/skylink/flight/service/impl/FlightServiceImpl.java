@@ -8,6 +8,7 @@ import com.skylink.flight.entity.Flight;
 import com.skylink.flight.entity.FlightStatus;
 import com.skylink.flight.exception.FlightAlreadyExistsException;
 import com.skylink.flight.exception.FlightNotFoundException;
+import com.skylink.flight.exception.InsufficientSeatsException;
 import com.skylink.flight.repository.FlightRepository;
 import com.skylink.flight.service.FlightService;
 import lombok.RequiredArgsConstructor;
@@ -170,6 +171,53 @@ public class FlightServiceImpl implements FlightService {
                 .totalSeats(flight.getTotalSeats())
                 .availableSeats(flight.getAvailableSeats())
                 .status(flight.getStatus())
+                .build();
+    }
+
+    @Override
+    public ApiResponse<String> reserveSeats(Long flightId, Integer seats) {
+
+        Flight flight = flightRepository.findById(flightId)
+                .orElseThrow(() ->
+                        new FlightNotFoundException("Flight not found"));
+
+        if (flight.getAvailableSeats() < seats) {
+            throw new InsufficientSeatsException("Not enough seats available");
+        }
+
+        flight.setAvailableSeats(flight.getAvailableSeats() - seats);
+
+        flightRepository.save(flight);
+
+        return ApiResponse.<String>builder()
+                .success(true)
+                .message("Seats reserved successfully")
+                .data("Success")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<String> releaseSeats(Long flightId, Integer seats) {
+
+        Flight flight = flightRepository.findById(flightId)
+                .orElseThrow(() ->
+                        new FlightNotFoundException("Flight not found"));
+
+        int updatedSeats = flight.getAvailableSeats() + seats;
+
+        // Available seats should never exceed total seats
+        if (updatedSeats > flight.getTotalSeats()) {
+            updatedSeats = flight.getTotalSeats();
+        }
+
+        flight.setAvailableSeats(updatedSeats);
+
+        flightRepository.save(flight);
+
+        return ApiResponse.<String>builder()
+                .success(true)
+                .message("Seats released successfully")
+                .data("Success")
                 .build();
     }
 }

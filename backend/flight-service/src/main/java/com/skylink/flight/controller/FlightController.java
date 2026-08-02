@@ -1,6 +1,8 @@
 package com.skylink.flight.controller;
 
 import com.skylink.flight.dto.request.CreateFlightRequest;
+import com.skylink.flight.dto.request.ReleaseSeatRequest;
+import com.skylink.flight.dto.request.ReserveSeatRequest;
 import com.skylink.flight.dto.request.SearchFlightRequest;
 import com.skylink.flight.dto.response.ApiResponse;
 import com.skylink.flight.dto.response.FlightResponse;
@@ -54,5 +56,21 @@ public class FlightController {
     public ApiResponse<String> deleteFlight(@PathVariable Long id) {
 
         return flightService.deleteFlight(id);
+    }
+
+    @PostMapping("/{id}/reserve")
+    public ApiResponse<String> reserveSeats(
+            @PathVariable Long id,
+            @Valid @RequestBody ReserveSeatRequest request) {
+
+        return flightService.reserveSeats(id, request.getSeats());
+    }
+
+    @PostMapping("/{id}/release")
+    public ApiResponse<String> releaseSeats(
+            @PathVariable Long id,
+            @Valid @RequestBody ReleaseSeatRequest request) {
+
+        return flightService.releaseSeats(id, request.getSeats());
     }
 }

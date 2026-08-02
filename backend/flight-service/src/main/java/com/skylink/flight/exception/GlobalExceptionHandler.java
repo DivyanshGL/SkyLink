@@ -43,4 +43,16 @@ public class GlobalExceptionHandler {
                         .data(null)
                         .build());
     }
+
+    @ExceptionHandler(InsufficientSeatsException.class)
+    public ResponseEntity<ApiResponse<String>> handleInsufficientSeats(
+            InsufficientSeatsException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.<String>builder()
+                        .success(false)
+                        .message(ex.getMessage())
+                        .data(null)
+                        .build());
+    }
 }
