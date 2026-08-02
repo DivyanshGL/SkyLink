@@ -11,6 +11,7 @@ import com.skylink.booking.feign.request.ReleaseSeatRequest;
 import com.skylink.booking.feign.request.ReserveSeatRequest;
 import com.skylink.booking.feign.response.FlightResponse;
 import com.skylink.booking.kafka.event.BookingEvent;
+import com.skylink.booking.kafka.event.PaymentEvent;
 import com.skylink.booking.kafka.producer.BookingProducer;
 import com.skylink.booking.repository.BookingRepository;
 import com.skylink.booking.service.BookingService;
@@ -64,11 +65,12 @@ public class BookingServiceImpl implements BookingService {
                                         )
                                 )
                 )
-                .status(BookingStatus.CONFIRMED)
+                .status(BookingStatus.PENDING_PAYMENT)
                 .bookingTime(LocalDateTime.now())
                 .build();
 
         Booking savedBooking = bookingRepository.save(booking);
+        System.out.println("Booking saved with status: " + booking.getStatus());
         BookingEvent event = BookingEvent.builder()
                 .bookingId(savedBooking.getId())
                 .userId(savedBooking.getUserId())
@@ -145,6 +147,40 @@ public class BookingServiceImpl implements BookingService {
                 .message("Booking cancelled successfully")
                 .data("Booking Cancelled")
                 .build();
+    }
+
+    @Override
+    public void confirmBooking(PaymentEvent event) {
+
+        Booking booking = bookingRepository.findById(event.getBookingId())
+                .orElseThrow(() ->
+                        new BookingNotFoundException(
+                                "Booking not found with id: " + event.getBookingId()
+                        ));
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+
+        bookingRepository.save(booking);
+
+        System.out.println("========== BOOKING CONFIRMED ==========");
+        System.out.println(event);
+    }
+
+    @Override
+    public void failBooking(PaymentEvent event) {
+
+        Booking booking = bookingRepository.findById(event.getBookingId())
+                .orElseThrow(() ->
+                        new BookingNotFoundException(
+                                "Booking not found with id: " + event.getBookingId()
+                        ));
+
+        booking.setStatus(BookingStatus.PAYMENT_FAILED);
+
+        bookingRepository.save(booking);
+
+        System.out.println("========== PAYMENT FAILED ==========");
+        System.out.println(event);
     }
 
     private BookingResponse mapToResponse(Booking booking){
