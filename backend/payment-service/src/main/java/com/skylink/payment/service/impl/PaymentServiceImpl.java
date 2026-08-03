@@ -45,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .amount(savedPayment.getAmount())
                 .transactionId(savedPayment.getTransactionId())
                 .status(savedPayment.getPaymentStatus().name())
+                .email(event.getEmail())
                 .build();
 
         paymentProducer.publishPaymentCompleted(paymentEvent);

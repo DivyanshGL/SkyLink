@@ -23,4 +23,6 @@ public class BookingEvent {
 
     private String status;
 
+    private String email;
+
 }
