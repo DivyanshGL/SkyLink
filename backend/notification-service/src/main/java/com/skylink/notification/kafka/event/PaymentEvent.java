@@ -22,4 +22,6 @@ public class PaymentEvent {
 
     private String status;
 
+    private String email;
+
 }

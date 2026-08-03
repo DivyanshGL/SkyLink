@@ -38,7 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setTo("shukla.pratham2003@gmail.com");   // Abhi testing ke liye apna email
+        message.setTo(event.getEmail()); // Abhi testing ke liye apna email
         message.setSubject("SkyLink - Booking Confirmed");
 
         message.setText("""
@@ -47,7 +47,6 @@ public class NotificationServiceImpl implements NotificationService {
             Your booking has been confirmed successfully.
 
             Booking ID      : %d
-            Payment ID      : %d
             Amount Paid     : ₹%s
             Transaction ID  : %s
             Status          : %s
@@ -74,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setTo("shukla.pratham2003@gmail.com");
+        message.setTo(event.getEmail());
         message.setSubject("SkyLink - Payment Failed");
 
         message.setText("""
