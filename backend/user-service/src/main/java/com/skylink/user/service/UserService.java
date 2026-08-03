@@ -1,5 +1,6 @@
 package com.skylink.user.service;
 
+import com.skylink.user.dto.request.CreateUserProfileRequest;
 import com.skylink.user.dto.request.UpdateProfileRequest;
 import com.skylink.user.dto.response.ApiResponse;
 import com.skylink.user.dto.response.UserProfileResponse;
@@ -18,4 +19,8 @@ public interface UserService {
     ApiResponse<List<UserProfileResponse>> getAllUsers();
 
     ApiResponse<String> deactivateUser(Long id);
+
+    ApiResponse<UserProfileResponse> createProfile(
+            CreateUserProfileRequest request
+    );
 }

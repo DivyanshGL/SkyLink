@@ -7,6 +7,7 @@ import com.skylink.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.skylink.user.dto.request.CreateUserProfileRequest;
 
 import java.util.List;
 
@@ -16,6 +17,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    @PostMapping
+    public ApiResponse<UserProfileResponse> createProfile(
+            @RequestBody CreateUserProfileRequest request) {
+
+        return userService.createProfile(request);
+    }
 
     @GetMapping("/{id}")
     public ApiResponse<UserProfileResponse> getProfile(
@@ -44,5 +52,7 @@ public class UserController {
 
         return userService.deactivateUser(id);
     }
+
+
 
 }

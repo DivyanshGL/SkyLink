@@ -9,6 +9,7 @@ import com.skylink.user.repository.UserProfileRepository;
 import com.skylink.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.skylink.user.dto.request.CreateUserProfileRequest;
 
 import java.util.List;
 
@@ -91,6 +92,27 @@ public class UserServiceImpl implements UserService {
                 .success(true)
                 .message("User deactivated successfully")
                 .data("User deactivated")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<UserProfileResponse> createProfile(
+            CreateUserProfileRequest request) {
+
+        UserProfile user = UserProfile.builder()
+                .id(request.getId())
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .active(true)
+                .build();
+
+        UserProfile savedUser = userProfileRepository.save(user);
+
+        return ApiResponse.<UserProfileResponse>builder()
+                .success(true)
+                .message("User profile created successfully")
+                .data(mapToResponse(savedUser))
                 .build();
     }
 

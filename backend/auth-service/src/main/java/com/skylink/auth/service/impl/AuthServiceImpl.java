@@ -15,6 +15,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.skylink.auth.client.UserServiceClient;
+import com.skylink.auth.dto.request.CreateUserProfileRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public ApiResponse<String> register(RegisterRequest request) {
@@ -41,7 +44,16 @@ public class AuthServiceImpl implements AuthService {
                 .role(Role.USER)
                 .build();
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        userServiceClient.createProfile(
+                CreateUserProfileRequest.builder()
+                        .id(user.getId())
+                        .fullName(user.getFirstName() + " " + user.getLastName())
+                        .email(user.getEmail())
+                        .phone(user.getPhoneNumber())
+                        .build()
+        );
 
         return ApiResponse.<String>builder()
                 .success(true)
