@@ -22,4 +22,6 @@ public class BookingEvent {
     private BigDecimal totalFare;
 
     private String status;
+
+    private String email;
 }

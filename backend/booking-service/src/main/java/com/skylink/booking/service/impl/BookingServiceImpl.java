@@ -1,8 +1,10 @@
 package com.skylink.booking.service.impl;
 
+import com.skylink.booking.client.UserServiceClient;
 import com.skylink.booking.dto.request.CreateBookingRequest;
 import com.skylink.booking.dto.response.ApiResponse;
 import com.skylink.booking.dto.response.BookingResponse;
+import com.skylink.booking.dto.response.UserProfileResponse;
 import com.skylink.booking.entity.Booking;
 import com.skylink.booking.exception.BookingException;
 import com.skylink.booking.exception.BookingNotFoundException;
@@ -29,6 +31,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final FlightClient flightClient;
     private final BookingProducer bookingProducer;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public ApiResponse<BookingResponse> createBooking(CreateBookingRequest request) {
@@ -37,6 +40,15 @@ public class BookingServiceImpl implements BookingService {
                 flightClient.getFlightById(request.getFlightId());
 
         FlightResponse flight = flightResponse.getData();
+        ApiResponse<UserProfileResponse> userResponse =
+                userServiceClient.getUserById(request.getUserId());
+
+        UserProfileResponse user = userResponse.getData();
+
+        if (user == null) {
+            throw new BookingException("User not found");
+        }
+
 
         if (flight == null) {
             throw new BookingException("Flight not found");
@@ -78,6 +90,7 @@ public class BookingServiceImpl implements BookingService {
                 .seatsBooked(savedBooking.getSeatsBooked())
                 .totalFare(savedBooking.getTotalFare())
                 .status(savedBooking.getStatus().name())
+                .email(user.getEmail())
                 .build();
 
         bookingProducer.publishBookingCreated(event);
