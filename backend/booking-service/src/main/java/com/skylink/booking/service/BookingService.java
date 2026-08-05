@@ -11,6 +11,8 @@ public interface BookingService {
 
     ApiResponse<BookingResponse> createBooking(CreateBookingRequest request);
 
+    ApiResponse<List<BookingResponse>> getAllBookings();
+
     ApiResponse<List<BookingResponse>> getBookingsByUser(Long userId);
 
     ApiResponse<BookingResponse> getBookingById(Long bookingId);

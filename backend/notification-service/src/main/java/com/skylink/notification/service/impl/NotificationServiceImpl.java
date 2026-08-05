@@ -57,7 +57,6 @@ public class NotificationServiceImpl implements NotificationService {
             SkyLink Team
             """.formatted(
                 event.getBookingId(),
-                event.getPaymentId(),
                 event.getAmount(),
                 event.getTransactionId(),
                 event.getStatus()

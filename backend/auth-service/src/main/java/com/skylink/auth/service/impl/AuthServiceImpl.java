@@ -46,14 +46,18 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
 
-        userServiceClient.createProfile(
-                CreateUserProfileRequest.builder()
-                        .id(user.getId())
-                        .fullName(user.getFirstName() + " " + user.getLastName())
-                        .email(user.getEmail())
-                        .phone(user.getPhoneNumber())
-                        .build()
-        );
+        try {
+            userServiceClient.createProfile(
+                    CreateUserProfileRequest.builder()
+                            .id(user.getId())
+                            .fullName(user.getFirstName() + " " + user.getLastName())
+                            .email(user.getEmail())
+                            .phone(user.getPhoneNumber())
+                            .build()
+            );
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create user profile in user-service: " + e.getMessage());
+        }
 
         return ApiResponse.<String>builder()
                 .success(true)

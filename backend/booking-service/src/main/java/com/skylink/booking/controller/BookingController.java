@@ -31,6 +31,11 @@ public class BookingController {
         return bookingService.getBookingById(id);
     }
 
+    @GetMapping
+    public ApiResponse<List<BookingResponse>> getAllBookings() {
+        return bookingService.getAllBookings();
+    }
+
     @GetMapping("/user/{userId}")
     public ApiResponse<List<BookingResponse>> getBookingsByUser(
             @PathVariable Long userId) {

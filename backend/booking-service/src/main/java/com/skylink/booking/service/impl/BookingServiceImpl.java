@@ -105,6 +105,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public ApiResponse<List<BookingResponse>> getAllBookings() {
+        List<BookingResponse> bookings = bookingRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+
+        return ApiResponse.<List<BookingResponse>>builder()
+                .success(true)
+                .message("All bookings fetched successfully")
+                .data(bookings)
+                .build();
+    }
+
+    @Override
     public ApiResponse<List<BookingResponse>> getBookingsByUser(Long userId) {
 
         List<BookingResponse> bookings = bookingRepository.findByUserId(userId)
