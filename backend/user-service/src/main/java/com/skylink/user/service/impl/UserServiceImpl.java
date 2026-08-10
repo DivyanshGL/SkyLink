@@ -96,6 +96,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ApiResponse<String> activateUser(Long id) {
+
+        UserProfile user = userProfileRepository.findById(id)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found with id: " + id));
+
+        user.setActive(true);
+
+        userProfileRepository.save(user);
+
+        return ApiResponse.<String>builder()
+                .success(true)
+                .message("User activated successfully")
+                .data("User activated")
+                .build();
+    }
+
+    @Override
     public ApiResponse<UserProfileResponse> createProfile(
             CreateUserProfileRequest request) {
 

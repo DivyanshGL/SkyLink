@@ -17,5 +17,9 @@ export const userService = {
   deactivateUser: async (id: number): Promise<ApiResponse<string>> => {
     const response = await axiosInstance.patch(`/users/${id}/deactivate`);
     return response.data;
+  },
+  activateUser: async (id: number): Promise<ApiResponse<string>> => {
+    const response = await axiosInstance.patch(`/users/${id}/activate`);
+    return response.data;
   }
 };

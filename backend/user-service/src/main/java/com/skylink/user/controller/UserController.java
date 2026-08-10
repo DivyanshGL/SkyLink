@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public ApiResponse<UserProfileResponse> createProfile(
-            @RequestBody CreateUserProfileRequest request) {
+            @Valid @RequestBody CreateUserProfileRequest request) {
 
         return userService.createProfile(request);
     }
@@ -51,6 +51,13 @@ public class UserController {
             @PathVariable Long id) {
 
         return userService.deactivateUser(id);
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ApiResponse<String> activateUser(
+            @PathVariable Long id) {
+
+        return userService.activateUser(id);
     }
 
 

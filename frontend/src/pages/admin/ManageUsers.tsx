@@ -27,12 +27,24 @@ const ManageUsers: React.FC = () => {
 
   const handleToggleStatus = async (id: number, currentStatus: boolean) => {
     if (confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this user?`)) {
+      // Optimistic update
+      setUsers(prev => prev.map(user => 
+        user.id === id ? { ...user, active: !currentStatus } : user
+      ));
+
       try {
-        await userService.deactivateUser(id);
+        if (currentStatus) {
+          await userService.deactivateUser(id);
+        } else {
+          await userService.activateUser(id);
+        }
         toast.success(`User ${currentStatus ? 'deactivated' : 'activated'}`);
-        fetchUsers();
       } catch (err) {
         toast.error("Action failed");
+        // Revert on error
+        setUsers(prev => prev.map(user => 
+          user.id === id ? { ...user, active: currentStatus } : user
+        ));
       }
     }
   };
@@ -66,20 +78,18 @@ const ManageUsers: React.FC = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone || 'N/A'}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      user.active !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${user.active !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}>
                       {user.active !== false ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <button 
+                    <button
                       onClick={() => handleToggleStatus(user.id, user.active !== false)}
-                      className={`p-2 rounded-lg transition-colors ${
-                        user.active !== false 
-                          ? 'text-red-500 hover:bg-red-50' 
-                          : 'text-green-500 hover:bg-green-50'
-                      }`}
+                      className={`p-2 rounded-lg transition-colors ${user.active !== false
+                        ? 'text-red-500 hover:bg-red-50'
+                        : 'text-green-500 hover:bg-green-50'
+                        }`}
                       title={user.active !== false ? 'Deactivate' : 'Activate'}
                     >
                       {user.active !== false ? <PowerOff size={16} /> : <Power size={16} />}

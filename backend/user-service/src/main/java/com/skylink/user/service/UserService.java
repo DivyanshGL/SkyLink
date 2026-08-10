@@ -19,6 +19,8 @@ public interface UserService {
     ApiResponse<List<UserProfileResponse>> getAllUsers();
 
     ApiResponse<String> deactivateUser(Long id);
+    
+    ApiResponse<String> activateUser(Long id);
 
     ApiResponse<UserProfileResponse> createProfile(
             CreateUserProfileRequest request
